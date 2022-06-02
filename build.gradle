@@ -66,6 +66,8 @@ dependencies {
 
     implementation 'net.coobird:thumbnailator:0.4.16'
 
+    //타임 리프 에서 로그인 정보 처리
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
 
 }
