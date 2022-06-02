@@ -19,6 +19,7 @@ import org.zerock.b01.service.BoardService;
 
 import javax.validation.Valid;
 
+
 @Controller
 @RequestMapping("/board")
 @Log4j2
@@ -65,7 +66,6 @@ public class BoardController {
 
         model.addAttribute("responseDTO", responseDTO);
     }
-
 
 
     @PreAuthorize("hasRole('USER')")
@@ -150,9 +150,9 @@ public class BoardController {
         return "redirect:/board/read";
     }
 
-
+    @PreAuthorize("principal.username == #writer")
     @PostMapping("/remove")
-    public String remove(Long bno, RedirectAttributes redirectAttributes) {
+    public String remove(Long bno, String writer, RedirectAttributes redirectAttributes) {
 
         log.info("remove post.. " + bno);
 

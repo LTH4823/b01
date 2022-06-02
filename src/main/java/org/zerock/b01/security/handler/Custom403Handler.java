@@ -12,16 +12,20 @@ import java.io.IOException;
 
 @Log4j2
 public class Custom403Handler implements AccessDeniedHandler {
-
     @Override
     public void handle(HttpServletRequest request,
-                       HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-
-        log.info("----------------------------------------");
-        log.info("-----------custom403Handler-------------");
-        log.info("----------------------------------------");
+                       HttpServletResponse response,
+                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        log.info("--------------------------------");
+        log.info("-----Custom403Handler----");
+        log.info("--------------------------------");
 
         response.setStatus(HttpStatus.FORBIDDEN.value());
+
+        log.info("--------METHOD-----------");
+        log.info(request.getMethod());
+
+        log.info(request.getContentType());
 
         //일반 request인지 Ajax인지
         String requestedWithHeader = request.getHeader("X-Requested-With");
@@ -35,6 +39,7 @@ public class Custom403Handler implements AccessDeniedHandler {
 
             response.sendRedirect("/member/login?error=ACCESS_DENIED");
         }
+
 
     }
 }

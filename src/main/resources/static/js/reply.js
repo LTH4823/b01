@@ -48,7 +48,12 @@ async function modifyReply(replyObj) {
     return response.data
 }
 
-async function removeReply(rno) {
-    const response = await axios.delete(`/replies/${rno}`)
+async function removeReply(param) {
+
+    const obj = {data: {...param}}
+
+    console.log(obj)
+
+    const response = await axios.delete(`/replies/${param.rno}`, obj)
     return response.data
 }

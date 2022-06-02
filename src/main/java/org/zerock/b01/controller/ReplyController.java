@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -86,11 +87,17 @@ public class ReplyController {
         return replyDTO;
     }
 
-    @ApiOperation(value = "Delete Reply", notes = "DELETE 방식으로 특정 댓글 삭제")
-    @DeleteMapping("/{rno}")
-    public Map<String,Long> remove( @PathVariable("rno") Long rno ){
 
-        replyService.remove(rno);
+    @ApiOperation(value = "Delete Reply", notes = "DELETE 방식으로 특정 댓글 삭제")
+    @PreAuthorize("principal.username == #replyDTO.replyer")
+    @DeleteMapping(value ="/{rno}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Long> remove(@PathVariable("rno") Long rno, @RequestBody ReplyDTO replyDTO){
+
+        //replyService.remove(rno);
+
+        log.info("===========reply remove======================");
+        log.info("=============rno: " + rno);
+        log.info(replyDTO);
 
         Map<String, Long> resultMap = new HashMap<>();
 
@@ -103,7 +110,7 @@ public class ReplyController {
 
     @ApiOperation(value = "Modify Reply", notes = "PUT 방식으로 특정 댓글 수정")
     @PutMapping(value = "/{rno}", consumes = MediaType.APPLICATION_JSON_VALUE )
-    public Map<String,Long> remove( @PathVariable("rno") Long rno, @RequestBody ReplyDTO replyDTO ){
+    public Map<String,Long> modify( @PathVariable("rno") Long rno, @RequestBody ReplyDTO replyDTO ){
 
         replyDTO.setRno(rno); //번호를 일치시킴
 
