@@ -349,6 +349,13 @@
 
     removeBtn.addEventListener("click", function(e) {
 
+
+        if (!hasAuth){
+            alert("댓글 작성자만 삭제가 가능합니다.")
+            modifyModal.hide()
+            return
+        }
+
         removeReply(replyHeader.innerHTML).then(result => {
 
             alert(result.rno +' 댓글이 삭제되었습니다.')

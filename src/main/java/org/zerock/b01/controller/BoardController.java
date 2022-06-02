@@ -120,6 +120,7 @@ public class BoardController {
 
     }
 
+    @PreAuthorize("principal.username == #boardDTO.writer")
     @PostMapping("/modify")
     public String modify( @Valid BoardDTO boardDTO,
                           BindingResult bindingResult,
