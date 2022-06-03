@@ -1,6 +1,7 @@
 package org.zerock.b01.security;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,6 +9,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.zerock.b01.domain.Member;
+import org.zerock.b01.repository.MemberRepository;
+
+import java.util.Optional;
 
 
 @Service
@@ -15,6 +20,9 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     public CustomUserDetailsService(){
         this.passwordEncoder = new BCryptPasswordEncoder();
@@ -26,6 +34,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("==============================================");
         log.info("=======================login===================");
         log.info(username);
+
+        Optional<Member> resultData = memberRepository.getWithRoles(username);
+
+        Member member = resultData.orElseThrow(()->new UsernameNotFoundException(username));
+
+        log.info(member);
 
         UserDetails result = User.builder()
                 .username(username)
