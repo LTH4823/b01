@@ -8,9 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -21,9 +24,10 @@ import javax.sql.DataSource;
 
 @Configuration
 @Log4j2
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
+public class CustomSecurityConfig {
 
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
@@ -40,8 +44,9 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
         return repo;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    //기존 디플리케이티드 제거 SecurityFilterChain 적용
+    @Bean
+    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
         log.info("======================================");
         log.info("======================================");
         log.info("=======CustomSecurityConfig ==========");
@@ -63,6 +68,8 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
 
         //소셜로그인
         http.oauth2Login();
+
+        return http.build();
     }
 
     //AccessDeniedHandler
@@ -71,13 +78,25 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
         return new Custom403Handler();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//
+//        log.info("------------web configure-------------------");
+//        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+//
+//    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
 
         log.info("------------web configure-------------------");
-        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+
+        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 
     }
+
+
+
 
 
 }
