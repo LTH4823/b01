@@ -16,7 +16,7 @@ import java.util.Map;
 @Setter
 @ToString
 public class MemberSecurityDTO extends User implements OAuth2User {
-
+    //일반적인 DTO와 다르게 시큐리티에서 쓸 DTO라서 내용이 다르다
     private String mid;
 
     private String mpw;
@@ -27,16 +27,16 @@ public class MemberSecurityDTO extends User implements OAuth2User {
 
     private boolean social;
 
-    private Map<String, Object> props; //소셜 로그인 정보
+    private Map<String, Object> props; //소셜로그인 정보
 
-    //DB 사용 안할시 적용 방법
-    public MemberSecurityDTO(String email, String mpw, Map<String, Object> props){
+    public MemberSecurityDTO(String email,String mpw, Map<String,Object> props){
 
-        super(email, mpw, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        super(email,mpw, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
         this.mid = email;
         this.mpw = mpw;
         this.props = props;
+        //db를 안쓰면 이거면 됨
 
     }
 
@@ -52,16 +52,16 @@ public class MemberSecurityDTO extends User implements OAuth2User {
         this.email = email;
         this.del = del;
         this.social = social;
+
     }
 
     @Override
     public Map<String, Object> getAttributes() {
-        return this.getProps();
+        return this.props;
     }
 
     @Override
     public String getName() {
         return this.mid;
     }
-
 }

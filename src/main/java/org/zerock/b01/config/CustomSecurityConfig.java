@@ -15,10 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.zerock.b01.security.CustomUserDetailsService;
 import org.zerock.b01.security.handler.Custom403Handler;
+import org.zerock.b01.security.handler.CustomSocialLoginSuccessHandler;
 
 import javax.sql.DataSource;
 
@@ -44,6 +46,8 @@ public class CustomSecurityConfig {
         return repo;
     }
 
+
+
     //기존 디플리케이티드 제거 SecurityFilterChain 적용
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
@@ -66,10 +70,17 @@ public class CustomSecurityConfig {
         //403에러
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
 
-        //소셜로그인
-        http.oauth2Login();
+//        //소셜로그인
+//        http.oauth2Login();
+
+        http.oauth2Login().successHandler(authenticationSuccessHandler());
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new CustomSocialLoginSuccessHandler(passwordEncoder());
     }
 
     //AccessDeniedHandler
