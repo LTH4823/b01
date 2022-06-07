@@ -60,6 +60,9 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
 
         //403에러
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+
+        //소셜로그인
+        http.oauth2Login();
     }
 
     //AccessDeniedHandler
