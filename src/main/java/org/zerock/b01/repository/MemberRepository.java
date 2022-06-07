@@ -13,4 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @Query("select m from Member m where m.mid = :mid and m.social = false")
     Optional<Member> getWithRoles(String mid);
 
+//    @Query("select count(m.mid) from Member m where m.mid = :mid")
+//    long checkCountId(String mid);
+
 }

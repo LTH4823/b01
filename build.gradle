@@ -69,6 +69,9 @@ dependencies {
     //타임 리프 에서 로그인 정보 처리
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    
 
 }
 
