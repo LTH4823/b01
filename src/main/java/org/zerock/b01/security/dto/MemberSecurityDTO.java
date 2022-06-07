@@ -4,14 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @ToString
-public class MemberSecurityDTO extends User {
+public class MemberSecurityDTO extends User implements OAuth2User {
 
     private String mid;
 
@@ -22,6 +26,19 @@ public class MemberSecurityDTO extends User {
     private boolean del;
 
     private boolean social;
+
+    private Map<String, Object> props; //소셜 로그인 정보
+
+    //DB 사용 안할시 적용 방법
+    public MemberSecurityDTO(String email, String mpw, Map<String, Object> props){
+
+        super(email, mpw, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+
+        this.mid = email;
+        this.mpw = mpw;
+        this.props = props;
+
+    }
 
 
     public MemberSecurityDTO(String username, String password, String email,
@@ -35,6 +52,16 @@ public class MemberSecurityDTO extends User {
         this.email = email;
         this.del = del;
         this.social = social;
-
     }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return this.getProps();
+    }
+
+    @Override
+    public String getName() {
+        return this.mid;
+    }
+
 }
